@@ -9,12 +9,18 @@ import unicodedata
 #url = "https://www.ebay.co.uk/itm/100X-Jewelry-Microscope-LED-Light-Magnifying-Magnifier-Jeweler-Loupe-Eye-Coins/302589690613?_trkparms=aid%3D333200%26algo%3DCOMP.MBE%26ao%3D1%26asc%3D20180409081753%26meid%3Dce3800a11346454bb6909945ec4ee103%26pid%3D100008%26rk%3D2%26rkt%3D12%26sd%3D111810440300%26itm%3D302589690613&_trksid=p2047675.c100008.m2219"
 #url = "https://www.ebay.co.uk/itm/JBL-90W-2-WAY-4-INCH-10cm-CAR-VAN-DOOR-SHELF-COAXIAL-SPEAKERS-GRILLS-NEW-PAIR/191831447320?hash=item2caa0b9718:g:hGkAAOSwu1VW7s-B%27"
 #url = "https://www.ebay.co.uk/itm/NEW-Square-Folding-Standard-Bridge-Card-Game-Black-Table/172834224891?hash=item283db8fafb:g:8CwAAOSwUMxZ80~i"
-url = "https://www.ebay.co.uk/itm/NEW-Professional-Knee-Kicker-Stretcher-Carpet-Fitters-Gripper-Tool-Green/172723981120?hash=item283726cb40:g:J6kAAOSwALtafYQJ"
+#url = "https://www.ebay.co.uk/itm/NEW-Professional-Knee-Kicker-Stretcher-Carpet-Fitters-Gripper-Tool-Green/172723981120?hash=item283726cb40:g:J6kAAOSwALtafYQJ"
 
-def get_all_products(url):
+urls = [
+    'https://www.ebay.co.uk/itm/Digital-Pocket-Mini-Weighing-Scales-for-Gold-Jewellery-Herbs-Silver-Scrap-350g/111810440300?hash=item1a086bec6c:g:H8wAAOSw5VFWM4QM',
+    'https://www.ebay.co.uk/itm/Braun-CRZ5BH-Cruzer5-Mens-Rechargeable-Corded-Cordless-Beard-Trimmer-Clipper-New/192162277164?_trkparms=aid%3D777001%26algo%3DDISCO.FEED%26ao%3D1%26asc%3D20160801204525%26meid%3Df308dd4d9f134592948858a69f0133c1%26pid%3D100651%26rk%3D1%26rkt%3D1%26%26itm%3D192162277164&_trksid=p2481888.c100651.m4497&_trkparms=pageci%3A239cbbeb-bf3b-11e8-aeb1-74dbd180d4e1%7Cparentrq%3A06c91d7f1660ab4cdd4b68b6fffba728%7Ciid%3A1',
+    'https://www.ebay.co.uk/itm/100X-Jewelry-Microscope-LED-Light-Magnifying-Magnifier-Jeweler-Loupe-Eye-Coins/302589690613?_trkparms=aid%3D333200%26algo%3DCOMP.MBE%26ao%3D1%26asc%3D20180409081753%26meid%3Dce3800a11346454bb6909945ec4ee103%26pid%3D100008%26rk%3D2%26rkt%3D12%26sd%3D111810440300%26itm%3D302589690613&_trksid=p2047675.c100008.m2219',
+]
+
+def get_all_products(url, num_retries=10):
     global soup
     global product_dict
-    soup = get_soup()
+    soup = get_soup(url, num_retries=10)
 
     product_dict = {
         'Title': get_title(soup),
@@ -29,7 +35,7 @@ def get_all_products(url):
     }
     return product_dict
 
-def get_soup(num_retries =10):
+def get_soup(url, num_retries =10):
     s = requests.Session()
 
     retries = Retry(
@@ -40,15 +46,12 @@ def get_soup(num_retries =10):
     
     s.mount('http://', HTTPAdapter(max_retries = retries))
 
-    # urls = []
-    # for value in ld.values():
-    #     urls.append(value[1])
-    # print('{} urls added.'.format(len(urls)))
-
+    # for url in urls:
+    #     return bs4.BeautifulSoup(s.get(url).text, 'lxml')
     return bs4.BeautifulSoup(s.get(url).text, 'lxml')
 
 def get_title(soup):
-    #print('Title: ', soup.title.string.split('|')[0])
+    print('Title: ', soup.title.string.split('|')[0])
     return soup.title.string.split('|')[0]
 
 def get_subtitle(soup):
@@ -122,21 +125,21 @@ def get_returns_policy(soup):
     elif return_policy:
         return return_policy
 
-def get_item_specific(soup):
-    item_specifics = {}
-    k = []
-    v = []
-    for item in soup.find_all('div', {'class':'section'}):
-        for td, value in zip(item.select('td.attrLabels'), item.select('td > span')):
-            item_specifics.setdefault(td.get_text(strip=True), []).append(value.get_text(strip=True))
-            k.append(td.get_text(strip=True))
-            v.append(value.get_text(strip=True))
+# def get_item_specific(soup):
+#     item_specifics = {}
+#     k = []
+#     v = []
+#     for item in soup.find_all('div', {'class':'section'}):
+#         for td, value in zip(item.select('td.attrLabels'), item.select('td > span')):
+#             item_specifics.setdefault(td.get_text(strip=True), []).append(value.get_text(strip=True))
+#             k.append(td.get_text(strip=True))
+#             v.append(value.get_text(strip=True))
 
-    #return (k,v)
-    # for key, value in zip(k, v):
-    #     item_specifics[key] = value
+#     #return (k,v)
+#     # for key, value in zip(k, v):
+#     #     item_specifics[key] = value
 
-    return item_specifics
+#     return item_specifics
 
 def get_specifics(soup):
     k = []
@@ -153,8 +156,23 @@ def get_specifics(soup):
 
     return item_specifics
 
-get_all_products(url)
+allProductList = []
 
-print('-'*15)
-print('PRINTED VERSION:\n',product_dict)
-print('-'*15)
+def megaList():
+    for url in urls:
+        allProductList.append(get_all_products(url))
+        print("Total items returned: ", len(allProductList))
+        #print(allProductList)
+    
+    # for item in allProductList:
+    #     print(allProductList)
+    #     print('-'*50)
+
+    # return allProductList
+
+
+megaList()
+
+# print('-'*15)
+# print('PRINTED VERSION:\n',allProductList)
+# print('-'*15)

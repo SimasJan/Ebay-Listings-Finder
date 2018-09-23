@@ -49,8 +49,16 @@ def show_listing_details():
     """ Goes to backend and performs function to scrape individual listing.
     inserts into the listbox (databox)
     """
-    backend.
-    
+    databox.delete(0,END)
+    backend.megaList()
+    for value in backend.allProductList:
+        databox.insert(END, value)
+        
+def show_detailed_items():
+    for value in backend.allProductList:
+        databox.insert(END,value)
+
+
 ###########################################################################
 # GUI WINDOW CODE AREA BELOW 
 root = Tk()
@@ -62,7 +70,7 @@ root.configure(background='lightgrey')
 ##########################################################################################
 # TOP-BAR FOR USER INTERACTION
 
-topbar= Frame(root, height=20, padx=2,pady=2, relief='solid',bd=2)
+topbar= Frame(root, height=20, padx=2,pady=2)
 topbar.pack(expand=NO, fill=X,side=TOP)
 # Defining a label.
 l1=Label(topbar, text='Seller/Shop Name:').grid(row=0,column=0,sticky='w')
@@ -76,15 +84,19 @@ e1.focus()
 
 # TOP-BAR BUTTONS FOR USER TO INTERACT
 b1=Button(topbar, text='START', width=10, command=get_seller_and_items_command).grid(row=0,column=4,padx=4)
-b2=Button(topbar,text='Show Items', width=10, command=show_seller_items_command).grid(row=0,column=8)
-b3=Button(topbar,text='Show Detailed', width=12).grid(row=0,column=10, padx=1, pady=1)
-b4=Button(topbar,text='Export Items', width=10).grid(row=0,column=12,padx=1,pady=1)
+
+commandBar = Frame(root, height=10, padx=2,pady=2, relief='solid',bd=2)
+commandBar.pack(expand=NO, fill=X, side=TOP)
+
+b2=Button(commandBar,text='Show Listings', command=show_seller_items_command).grid(row=1,column=1,sticky='w')
+b3=Button(commandBar,text='Get Product Details', command=show_listing_details).grid(row=1,column=2,sticky='w')
+b4=Button(commandBar,text='Show Detailed Items', width=15,command=show_detailed_items).grid(row=1,column=3,sticky='w')
 
 ##########################################################################
 # INFO-BAR FOR INFORMATION, USER NOTIFICATION ABOUT RESULTS
 
 # info-bar frame
-info_bar = Frame(root,height=12, padx=2,relief='solid',bd=2)
+info_bar = Frame(root,height=12, padx=2)
 info_bar.pack(expand=NO,fill=X, side=TOP)
 
 # Notification/Information field label.
