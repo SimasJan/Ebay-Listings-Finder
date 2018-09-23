@@ -48,8 +48,19 @@ def seller_listed_items():
 
 ##########################################
 
-def get_product_details():
+def get_product_details(num_retries = 10):
+    loop_counter = 0
     
+    soup = get_soup()
+    
+    product_dict = {
+        'Title': get_title(soup)
+        ''
+
+    }
+
+
+
 
 ebay_user = 'audiosave'
 get_seller(ebay_user)

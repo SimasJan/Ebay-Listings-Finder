@@ -20,7 +20,7 @@ def get_all_products(url):
         'Units Sold': units_sold(soup),
         'Location': get_location(soup),
         'Returns': get_returns_policy(soup),
-        'EAN': get_ean(soup),
+        # 'EAN': get_ean(soup),
     }
     return product_dict
 
