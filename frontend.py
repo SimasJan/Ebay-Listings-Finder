@@ -37,13 +37,14 @@ def internet(event):
         if key == item[1]:
             webbrowser.open_new(value[1])
 
-def export_items():
+def export_items_command():
     """ Exports to csv file all the items in the listbox (databox) with the name of the seller.
     Method 1: Select all the items in the listbox. Identifies (?) them by some measurement, goes to backend and finds 
     identified item details from a dictionary of full item details. Finally, exports them to csv file in the existing directory.
     csv file format: title (key) = first column | values = following columns.
     """
-    pass
+    backend.allProducts
+    
 
 def show_listing_details():
     """ Goes to backend and performs function to scrape individual listing.
@@ -51,15 +52,13 @@ def show_listing_details():
     """
     databox.delete(0,END)
     backend.megaList()
-    # databox.insert(backend.megaList())
-    for value in backend.allProductList:
-        databox.insert(END, value)
-        
+    for key, value in backend.allProducts.items():
+        databox.insert(END, [key, value])
+    
 def show_detailed_items():
     databox.delete(0,END)
-    for value in backend.allProductList:
-        databox.insert(END,value)
-
+    for key, value in backend.allProducts.items():
+        databox.insert(END, [key, value])
 """
 do not show links in the detailed item.
 make item clickable.

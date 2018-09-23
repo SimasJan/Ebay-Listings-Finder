@@ -47,7 +47,7 @@ def seller_listed_items():
         print('total items added {}'.format(len(listing_dict)))
 
 def get_all_products(url, num_retries=10):
-    print('collecting detailed product information....')
+    print('collecting listed product details from inside....')
     print('-'*55)
 
     global soup
@@ -55,7 +55,7 @@ def get_all_products(url, num_retries=10):
     soup = get_soup(url, num_retries=10)
 
     product_dict = {
-        'Title:': get_title(soup),
+        # 'Title:': get_title(soup),
         'Sub-title:': get_subtitle(soup),
         'Condition:': get_condition(soup),
         'Price:': get_price(soup),
@@ -81,9 +81,9 @@ def get_soup(url,num_retries =10):
     # print('URL INSERTED IN GET SOUP:\n',url)
     return bs4.BeautifulSoup(s.get(url).text, 'lxml')
 
-def get_title(soup):
-    print(soup.title.string.split('|')[0],'\n-'*3)
-    return soup.title.string.split('|')[0]
+# def get_title(soup):
+#     print(soup.title.string.split('|')[0])
+#     return soup.title.string.split('|')[0]
 
 def get_subtitle(soup):
     for value in soup.select('#subTitle'):
@@ -132,13 +132,14 @@ def get_quantity(soup):
         return quantity[:-10]
 
 def units_sold(soup):
-    for item in soup.find_all('span', {'class': ['vi-qtyS-hot-red', 'vi-qtyS']}):
-        units_sold = item.get_text(strip=True)
+    for item in soup.find_all('span', {'class': ['vi-qtyS-hot-red', 'vi-qtyS', 'vi-qtyS-hot']}):
+        sold_items = item.get_text(strip=True)
+        print(sold_items)
 
-    if not units_sold:
+    if not sold_items:
         return 'N/A'
     else:
-        return units_sold
+        return sold_items
 
 def get_location(soup):
     for span in soup.select('div.iti-eu-bld-gry > span'):
@@ -168,6 +169,7 @@ def get_specifics(soup):
     item_specifics = {}
     for k,v in zip(k[1:],v):
         item_specifics[k] = v
+    print('ITEM SPECIFICS:\n',item_specifics)
 
     return item_specifics
 
@@ -178,24 +180,27 @@ def get_url_link(soup):
 allProductList = []
 
 def megaList():
-    print('-'*50)
-    print('collecting detailed product information....')
-    print('-'*50)
+    print(' ----- collecting detailed product information.... -----')
 
     for value in listing_dict.values():
         allProductList.append(get_all_products(value[1]))
-        print('-'*10)
+        print('~'*30)
         print("Total items returned: ", len(allProductList))
-        print('-'*10)
+        print('~'*30)
+    
+    final_product_dictionary()
 
-# def add_title(listing_dict):
-#     for key in listing_dict.keys():
-#         return key
+allProducts = {}
 
-# ebay_user = 'lyon-palace'
+def final_product_dictionary():
+    for key, value in zip(listing_dict.keys(), allProductList):
+        allProducts.setdefault(key, []).append(value)
+    print(len(allProducts))
+
+# ebay_user = 'rtwdirectsales'
 # get_seller(ebay_user)
 # seller_listed_items()
-
 # megaList()
 
-# print(allProductList)
+# final_product_dictionary()
+# print(allProducts)
