@@ -1,6 +1,8 @@
 import requests, os, csv, sys, re
 import bs4
 from requests.packages.urllib3.util.retry import Retry
+from requests.adapters import HTTPAdapter
+import unicodedata
 
 ###########################################################################
 # BACKEND (LOGIC) CODE AREA
@@ -43,6 +45,15 @@ def seller_listed_items():
     for title, item, link in zip(soup.select('.vip'), soup.select('.bold.bidsold'), soup.select('.vip')):
         listing_dict.setdefault(title.text, []).append(item.get_text().strip())
         listing_dict.setdefault(title.text, []).append(link.get('href'))
+
+def get_item_specific(soup):
+    item_specifics = {}
+    for item in soup.find_all('div', {'class':'section'}):
+        for td, value in zip(item.select('td.attrLabels'), item.select('td > span')):
+            item_specifics.setdefault(td.get_text(strip=True), []).append(value.get_text(strip=True))
+    
+    return item_specifics
+
 
 
 ##########################################
@@ -88,3 +99,4 @@ def seller_listed_items():
 # get_seller(ebay_user)
 # seller_listed_items()
 # get_detailed_information()
+

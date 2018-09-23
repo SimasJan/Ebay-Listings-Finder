@@ -5,6 +5,8 @@ from requests.adapters import HTTPAdapter
 import unicodedata
 
 url = "https://www.ebay.co.uk/itm/Digital-Pocket-Mini-Weighing-Scales-for-Gold-Jewellery-Herbs-Silver-Scrap-350g/111810440300?hash=item1a086bec6c:g:H8wAAOSw5VFWM4QM"
+#url = "https://www.ebay.co.uk/itm/Braun-CRZ5BH-Cruzer5-Mens-Rechargeable-Corded-Cordless-Beard-Trimmer-Clipper-New/192162277164?_trkparms=aid%3D777001%26algo%3DDISCO.FEED%26ao%3D1%26asc%3D20160801204525%26meid%3Df308dd4d9f134592948858a69f0133c1%26pid%3D100651%26rk%3D1%26rkt%3D1%26%26itm%3D192162277164&_trksid=p2481888.c100651.m4497&_trkparms=pageci%3A239cbbeb-bf3b-11e8-aeb1-74dbd180d4e1%7Cparentrq%3A06c91d7f1660ab4cdd4b68b6fffba728%7Ciid%3A1"
+url = "https://www.ebay.co.uk/itm/100X-Jewelry-Microscope-LED-Light-Magnifying-Magnifier-Jeweler-Loupe-Eye-Coins/302589690613?_trkparms=aid%3D333200%26algo%3DCOMP.MBE%26ao%3D1%26asc%3D20180409081753%26meid%3Dce3800a11346454bb6909945ec4ee103%26pid%3D100008%26rk%3D2%26rkt%3D12%26sd%3D111810440300%26itm%3D302589690613&_trksid=p2047675.c100008.m2219"
 
 def get_all_products(url):
     global soup
@@ -20,7 +22,7 @@ def get_all_products(url):
         'Units Sold': units_sold(soup),
         'Location': get_location(soup),
         'Returns': get_returns_policy(soup),
-        # 'EAN': get_ean(soup),
+        'Specifics': get_item_specific(soup),
     }
     return product_dict
 
@@ -48,11 +50,15 @@ def get_title(soup):
 
 def get_subtitle(soup):
     for value in soup.select('#subTitle'):
-        subtitle = value.get_text(strip=True)
-    if not subtitle:
-        return 'N/A'
-    elif subtitle:
-        return subtitle
+        if value == None:
+            subtitle = 'N/A'
+        else:
+            subtitle = value.get_text(strip=True)
+    
+        if not subtitle:
+            return 'N/A'
+        else:
+            return subtitle
 
 def get_condition(soup):
     for value in soup.select('#vi-itm-cond'):
@@ -89,7 +95,7 @@ def get_quantity(soup):
         return quantity[:-10]
 
 def units_sold(soup):
-    for item in soup.select('.vi-qtyS-hot-red'):
+    for item in soup.find_all('span', {'class': ['vi-qtyS-hot-red', 'vi-qtyS']}):
         units_sold = item.get_text(strip=True)
 
     if not units_sold:
@@ -113,25 +119,19 @@ def get_returns_policy(soup):
     elif return_policy:
         return return_policy
 
-def get_item_specifics():
-    item_specific = {
-    }
-    specific_name = []
-    specific_value = []
+def get_item_specific(soup):
+    item_specifics = {}
+    k = []
+    v = []
+    for item in soup.find_all('div', {'class':'section'}):
+        for td, value in zip(item.select('td.attrLabels'), item.select('td > span')):
+            k.append(td.get_text(strip=True))
+            v.append(value.get_text(strip=True))
+    
+    for key, value in zip(k[1:], v):
+        item_specifics[key] = value
 
-    for item in soup.find_all('div', {'class':'itemAttr'}):
-        for td in item.select('td.attrLabels'):
-            specific_name.append(td.get_text(strip=True))
-
-            #item_specific.setdefault(td.get_text(strip=True), [])
-
-    for value in soup.find_all('div', {'class':'itemAttr'}):
-        for td in value.select('td > span'):
-            specific_value.append(td.get_text(strip=True))
-
-
-    return specific_name, specific_value
-
+    return item_specifics
 
 
 get_all_products(url)
@@ -139,3 +139,9 @@ get_all_products(url)
 print('-'*15)
 print('PRINTED VERSION:\n',product_dict)
 print('-'*15)
+
+
+
+# for item in soup.find_all('div', {'class':'itemAttr'}):
+#     for td in item.select('td'):
+#         print(td.getText(strip=True))
