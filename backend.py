@@ -55,15 +55,15 @@ def get_all_products(url, num_retries=10):
     soup = get_soup(url, num_retries=10)
 
     product_dict = {
-        'Title': get_title(soup),
-        'Specifics': get_specifics(soup),
-    #     'Sub-title': get_subtitle(soup),
-    #     'Condition': get_condition(soup),
-    #     'Price': get_price(soup),
-    #     'Qnty': get_quantity(soup),
-    #     'Units Sold': units_sold(soup),
-    #     'Location': get_location(soup),
-    #     'Returns': get_returns_policy(soup),
+        'Title:': get_title(soup),
+        'Sub-title:': get_subtitle(soup),
+        'Condition:': get_condition(soup),
+        'Price:': get_price(soup),
+        'Qnty:': get_quantity(soup),
+        'Units Sold:': units_sold(soup),
+        'Location:': get_location(soup),
+        'Returns:': get_returns_policy(soup),
+        'Specifics:': get_specifics(soup),
         'link': get_url_link(soup),
     }
     return product_dict
@@ -82,7 +82,7 @@ def get_soup(url,num_retries =10):
     return bs4.BeautifulSoup(s.get(url).text, 'lxml')
 
 def get_title(soup):
-    print(soup.title.string.split('|')[0],'-'*10)
+    print(soup.title.string.split('|')[0],'\n-'*3)
     return soup.title.string.split('|')[0]
 
 def get_subtitle(soup):
@@ -188,8 +188,11 @@ def megaList():
         print("Total items returned: ", len(allProductList))
         print('-'*10)
 
+# def add_title(listing_dict):
+#     for key in listing_dict.keys():
+#         return key
 
-# ebay_user = 'rtwdirectsales'
+# ebay_user = 'lyon-palace'
 # get_seller(ebay_user)
 # seller_listed_items()
 

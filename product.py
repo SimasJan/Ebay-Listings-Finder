@@ -156,7 +156,9 @@ def get_specifics(soup):
 
     return item_specifics
 
-allProductList = []
+allProductList = {
+    'Title': 
+}
 
 def megaList():
     for url in urls:

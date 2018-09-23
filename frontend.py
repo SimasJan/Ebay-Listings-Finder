@@ -51,13 +51,27 @@ def show_listing_details():
     """
     databox.delete(0,END)
     backend.megaList()
+    # databox.insert(backend.megaList())
     for value in backend.allProductList:
         databox.insert(END, value)
         
 def show_detailed_items():
+    databox.delete(0,END)
     for value in backend.allProductList:
         databox.insert(END,value)
 
+"""
+do not show links in the detailed item.
+make item clickable.
+values of the list 'allProductList' add individually to a variable,
+it will become dictionary. 
+from there 
+
+for value in a.items():
+    if value[0] == 'link':
+        print(value[1]) # prints the (value) url
+        print(value[0]) # prints the (key) text 'link'
+"""
 
 ###########################################################################
 # GUI WINDOW CODE AREA BELOW 
