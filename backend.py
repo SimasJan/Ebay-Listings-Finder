@@ -46,57 +46,9 @@ def seller_listed_items():
         listing_dict.setdefault(title.text, []).append(item.get_text().strip())
         listing_dict.setdefault(title.text, []).append(link.get('href'))
 
-def get_item_specific(soup):
-    item_specifics = {}
-    for item in soup.find_all('div', {'class':'section'}):
-        for td, value in zip(item.select('td.attrLabels'), item.select('td > span')):
-            item_specifics.setdefault(td.get_text(strip=True), []).append(value.get_text(strip=True))
-    
-    return item_specifics
 
 
-
-##########################################
-# TESTING AREA 
-# def get_detailed_information(num_retries= 10):
-#     """ Takes the listing url from the listing_dict and collects available detailed item information ()
-#     from the page. """
-#     counter = 0
-
-#     # getting the soup 
-#     soup = get_soup(url,num_retries)
-#     print(counter)
-
-#     # product_dict = {
-#     #     'Title': get_title(soup),
-#     # }
-#     return soup.title()
-
-
-# def get_soup(num_retries= 10):
-#         s = requests.Session()
-
-#         retries = Retry(
-#             total = num_retries,
-#             backoff_factor = 0.1,
-#             status_forcelist = [500, 502, 503, 504]
-#             )
-#         print('happening')
-#         return BeautifulSoup(s.get(url).text, 'lxml')
-
-
-#         for value in ld.values():
-#             r = requests.get(value[1])
-#             soup = bs4.BeautifulSoup(r.text, 'lxml')
-#             counter = 0
-#             print('Loops: ', counter)
-
-
-# ##########################################
-# # TESTING AREA ENDS 
-
-# ebay_user = 'rtwdirectsales'
-# get_seller(ebay_user)
-# seller_listed_items()
-# get_detailed_information()
-
+ebay_user = 'rtwdirectsales'
+get_seller(ebay_user)
+seller_listed_items()
+get_all_products(url)

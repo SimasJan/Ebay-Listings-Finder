@@ -32,7 +32,7 @@ def internet(event):
     """ Identifies the selected item in the listbox (databox), if item title matches key value in the 
     backend listed item dictionary, opens the matched title url link in the browser. """
     item = databox.get('active') # gets clicked item
-    #print(item)
+    print(item)
     for key, value in backend.listing_dict.items():
         if key == item[1]:
             webbrowser.open_new(value[1])
@@ -49,7 +49,7 @@ def show_listing_details():
     """ Goes to backend and performs function to scrape individual listing.
     inserts into the listbox (databox)
     """
-    pass
+    backend.
     
 ###########################################################################
 # GUI WINDOW CODE AREA BELOW 
